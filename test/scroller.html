@@ -76,8 +76,11 @@
 	(function() {
 		'use strict';
 		var clicker = document.querySelector('.clicker');
-		clicker.addEventListener('click', evt => clicker.classList.toggle('clicked'));
-		clicker.addEventListener('mousedown', evt => {
+		clicker.addEventListener('click', function(evt) {
+			clicker.classList.toggle('clicked');
+		});
+
+		clicker.addEventListener('mousedown', function(evt) {
 			evt.stopPropagation();
 			evt.preventDefault();
 
@@ -86,7 +89,7 @@
 			var elemX = clicker.offsetLeft;
 			var elemY = clicker.offsetTop;
 
-			var onMouseMove = evt => {
+			var onMouseMove = function(evt) {
 				var dx = evt.screenX - screenX;
 				var dy = evt.screenY - screenY;
 				clicker.style.left = (elemX + dx) + 'px';
@@ -95,7 +98,7 @@
 				evt.preventDefault();
 			};
 
-			var onMouseUp = evt => {
+			var onMouseUp = function(evt) {
 				document.removeEventListener('mousemove', onMouseMove);
 				document.removeEventListener('mouseup', onMouseUp);
 			};
