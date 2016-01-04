@@ -33,6 +33,8 @@
 	<div class="view view-guest">
 		<iframe src="scroller.html" class="guest" frameborder="0"></iframe>
 	</div>
+
+	<p><a href="submit.html">Click here</a></p>
 	
 	<script src="../dist/index.js"></script>
 	<script>
@@ -42,10 +44,13 @@
 		var guestView = document.querySelector('.guest');
 		var options = {sameParent: true};
 
-		var host = pageSync.events.host(hostView.contentDocument, options);
-		var guest = pageSync.events.guest(guestView.contentDocument, options);
+		var host = pageSync.host(hostView.contentDocument, options);
+		var guest = pageSync.guest(guestView.contentDocument, options);
 
-		host.on('data', guest);
+		host.on('data', guest)
+		.on('dispose', function() {
+			console.log('host disposed');
+		});
 	}, 10);
 	</script>
 </body>
