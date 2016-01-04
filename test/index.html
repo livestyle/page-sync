@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Scroll test</title>
+	<style>
+	.view {
+		width: 400px;
+		height: 600px;
+		position: absolute;
+		top: 50px;
+		left: 50px;
+		box-shadow: 3px 3px 20px rgba(0,0,0,0.2);
+	}
+
+	.view-guest {
+		left: 500px;
+		width: 600px;
+		height: 400px;
+	}
+
+	.view iframe {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+	</style>
+</head>
+<body>
+	<div class="view view-host">
+		<iframe src="scroller.html" class="host" frameborder="0"></iframe>
+	</div>
+	<div class="view view-guest">
+		<iframe src="scroller.html" class="guest" frameborder="0"></iframe>
+	</div>
+	
+	<script src="../dist/index.js"></script>
+	<script>
+	setTimeout(function() {
+		'use strict';
+		var hostView = document.querySelector('.host');
+		var guestView = document.querySelector('.guest');
+		var options = {sameParent: true};
+
+		var host = pageSync.events.host(hostView.contentDocument, options);
+		var guest = pageSync.events.guest(guestView.contentDocument, options);
+
+		host.on('data', guest);
+	}, 10);
+	</script>
+</body>
+</html>
