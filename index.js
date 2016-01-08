@@ -14,6 +14,7 @@ export function host(doc, options={}) {
 		}
 	};
 	let bindings = eventList.map(e => e.host(doc, options).on('data', proxy));
+	out.document = doc;
 	out.dispose = () => {
 		bindings.forEach(binding => {
 			binding.off('data', proxy);
@@ -22,7 +23,10 @@ export function host(doc, options={}) {
 			}
 		});
 		bindings.length = 0;
-		doc.defaultView.removeEventListener('unload', onUnload);
+		if (doc.defaultView) {
+			doc.defaultView.removeEventListener('unload', onUnload);
+		}
+		out.document = null;
 		out.emit('dispose');
 	};
 
@@ -33,9 +37,11 @@ export function host(doc, options={}) {
 export function guest(doc, options={}) {
 	let bindings = eventList.map(e => e.guest(doc, options));
 	let out = data => bindings.forEach(b => b(data));
+	out.document = doc;
 	out.dispose = () => {
 		bindings.forEach(b => b.dispose && b.dispose());
 		bindings.length = 0;
+		out.document = null;
 	};
 	return out;
 }

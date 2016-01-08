@@ -36,7 +36,7 @@ function jsBundle(file, options) {
 		}
 
 		if (options.babelify) {
-			b = b.transform('babelify', options.babelOptions)
+			b = b.transform('babelify', options.babelOptions);
 		}
 
 		_bundles[file.path] = b;
