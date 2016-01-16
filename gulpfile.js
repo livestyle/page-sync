@@ -13,8 +13,8 @@ const production = ~process.argv.indexOf('--production');
 gulp.task('js', () => {
 	return gulp.src('./index.js')
 	.pipe(js({
-		global; true,
-		standalone: 'pageSync', 
+		global: true,
+		standalone: 'pageSync',
 		debug: true,
 		watch: isWatching
 	}))

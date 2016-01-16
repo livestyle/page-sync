@@ -40,11 +40,58 @@
 	.clicker.clicked {
 		background: yellow;
 	}
+
+	@media (max-width: 600px) {
+		.clicker {
+			background: yellow;
+		}
+
+		.clicker:hover {
+			background: green;
+		}
+	}
+
+	.hover1 {
+		background: red;
+		padding: 10px;
+	}
+
+	.hover1:hover {
+		background: yellow;
+	}
+
+	.hover2 {
+		transition: transform 0.2s ease-in-out;
+		background: green;
+	}
+
+	.hover2:hover {
+		transform: scale(1.1);
+	}
+
+	.hover3 {
+		color: #fff;
+		background: blue;
+		font-size: 12px;
+		transition: color 0.5s;
+	}
+
+	.hover3:hover {
+		font-size: 20px;
+		color: orange;
+	}
 	</style>
 </head>
 <body>
 	<div class="layout">
 		<div class="clicker"></div>
+
+		<div class="hover1">
+			<div class="hover2">
+				<div class="hover3" style="font-size:30px">Hover me</div>
+			</div>
+		</div>
+
 		<form action="submit.html" class="scroller">
 			<p><input type="checkbox" name="chk" id="chk" /><label for="chk">Label</label></p>
 			<p><label><input type="checkbox" name="chk2" />Label</label></p>
@@ -70,7 +117,7 @@
 			<p>Magni, qui, natus. Nam odio illo praesentium rerum tempore impedit ullam culpa, nisi quidem saepe dicta soluta quam dolor aliquam adipisci voluptatibus sint porro sed cumque, optio in, neque ducimus. Corrupti eos, sed maxime voluptatibus veritatis illum labore est reprehenderit vel officiis in rerum exercitationem, aperiam voluptas repellendus architecto nostrum nihil eius optio amet. Repellat non velit, facere odit dolore doloremque eius et nisi aliquam placeat quidem commodi vitae natus quos recusandae dolorem animi adipisci modi sed. Fugit nihil facilis incidunt, dicta ab velit mollitia? Tempora unde deleniti vero porro necessitatibus, repudiandae, reiciendis dolores, est et esse ratione voluptate. Nisi.</p>
 			<p>Illum nam laborum vero corrupti minus doloremque excepturi expedita quidem eius quasi, eligendi animi architecto explicabo voluptate natus ad? Et, aliquid, voluptatibus earum doloribus amet laudantium ab doloremque totam rem unde natus nam animi quam dolorem accusamus eum, iure eveniet omnis consequuntur assumenda maxime deleniti atque. Magni numquam doloribus tempore asperiores aliquam sit repudiandae explicabo illo nulla modi velit neque eum enim nisi quia, facilis dolores molestias ipsam alias accusamus, odit totam dignissimos ad! Deleniti suscipit autem animi, ea quos, nostrum magni ducimus officia itaque corporis accusamus sed quam minima explicabo veritatis fugit natus. Ad possimus in quidem deserunt expedita.</p>
 		</form>
-		<p><a href="submit.html">Click here</a></p>
+		<p><a href="submit.html" style="font-style:italic">Click here</a></p>
 	</div>
 	<script>
 	(function() {
