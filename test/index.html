@@ -28,18 +28,19 @@
 </head>
 <body>
 	<div class="view view-host">
-		<iframe src="scroller.html" class="host" frameborder="0"></iframe>
+		<iframe src="./demo/" class="host" frameborder="0"></iframe>
 	</div>
 	<div class="view view-guest">
-		<iframe src="scroller.html" class="guest" frameborder="0"></iframe>
+		<iframe src="./demo/" class="guest" frameborder="0"></iframe>
 	</div>
 
 	<p><a href="submit.html">Click here</a></p>
-	
+
 	<script src="../dist/index.js"></script>
 	<script>
 	setTimeout(function() {
 		'use strict';
+		console.log('init host & guest');
 		var hostView = document.querySelector('.host');
 		var guestView = document.querySelector('.guest');
 		var options = {sameParent: true};
@@ -51,7 +52,7 @@
 		.on('dispose', function() {
 			console.log('host disposed');
 		});
-	}, 10);
+	}, 500);
 	</script>
 </body>
 </html>
