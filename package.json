@@ -1,6 +1,6 @@
 {
   "name": "page-sync",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Sync browser page events (scroll, click, etc.) between pages",
   "main": "index.js",
   "scripts": {
