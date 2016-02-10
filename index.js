@@ -2,9 +2,10 @@
 
 import EventEmitter from 'eventemitter3';
 import * as events from './lib/events';
-import documentReady from './lib/document-ready';
+import {default as documentReady, isDocumentReady} from './lib/document-ready';
 import broadcast from './lib/broadcast';
 import parseViewport from './lib/meta-parser';
+import scheduler from './lib/scheduler';
 
 const eventList = Object.keys(events).map(key => events[key]);
 
@@ -15,18 +16,18 @@ const eventList = Object.keys(events).map(key => events[key]);
  * to specific destination
  * @param  {Window} wnd
  */
-export default function(wnd, options={}) {
+export default function(wnd=window, options={}) {
 	var controller;
 	var ready = false, disposed = false;
 	var doc = getDocument(wnd);
-	var emitEvent = data => broadcast(wnd, 'event', data, options);
+	var emitEvent = data => broadcast(wnd.parent, 'event', data, options);
+	var docReady = wnd => broadcast(wnd.parent, 'document-ready', parseViewport(wnd.document), options);
 	var onMessage = evt => {
-		// listen to events for given session only
-		var data = evt.data;
-		if (data.ns === 'page-sync' && (!options.sessionId || data.sessionId === options.sessionId)) {
+		if (evt.data && evt.data.ns === 'page-sync') {
 			handleEvent(evt.data);
 		}
 	};
+	var sc = scheduler(wnd);
 
 	var handleEvent = payload => {
 		let {name, data} = payload;
@@ -46,18 +47,25 @@ export default function(wnd, options={}) {
 			}
 
 			data.forEach(controller);
+		} else if (name === 'check-document-ready') {
+			// Check if document became ready before creating outer controller
+			// for cross-origin messaging.
+			if (isDocumentReady(wnd.document)) {
+				docReady(wnd);
+			}
+		} else if (name === 'set-options' && data) {
+			Object.keys(data).forEach(key => options[key] = data[key]);
 		}
 	};
 
 	if (doc) {
-		console.log('creating pagesync controller');
 		// Document is available, no cross-origin issues: we can control it from here.
 		documentReady(doc).then(() => {
 			if (!disposed) {
 				ready = true;
 				controller = guest(doc, options);
 				wnd.addEventListener('message', onMessage);
-				broadcast(wnd, 'document-ready', parseViewport(doc));
+				docReady(wnd);
 			}
 		});
 	} else {
@@ -65,6 +73,7 @@ export default function(wnd, options={}) {
 		// Assume that given window contains the same controller in it
 		// (injected via <script> tag on page) so we can communicate with
 		// via `postMessage`
+		broadcast(wnd, 'set-options', options);
 	}
 
 	var out = function(name, data) {
@@ -73,14 +82,22 @@ export default function(wnd, options={}) {
 			ready && handleEvent({name, data});
 		} else {
 			// use cross-origin messaging instead
-			broadcast(wnd, name, data, options);
+			if (name === 'event') {
+				sc(data);
+			} else {
+				broadcast(wnd, name, data, options);
+			}
 		}
 	};
 
+	out.checkReady = () => broadcast(wnd, 'check-document-ready');
+
 	out.dispose = () => {
 		disposed = true;
-		wnd.removeEventListener('message', onMessage);
 		controller && controller.dispose();
+		if (doc) {
+			wnd.removeEventListener('message', onMessage);
+		}
 	};
 
 	return out;
@@ -130,7 +147,5 @@ export function guest(doc, options={}) {
 function getDocument(wnd) {
 	try {
 		return wnd.document;
-	} catch(e) {
-		console.error(e);
-	}
+	} catch(e) {}
 }
